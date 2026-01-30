@@ -1,0 +1,2333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تقييم الأعمال الفنية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;800&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B4566;
+            --primary-light: #A85C7A;
+            --secondary: #6B8B7E;
+            --accent: #D4A574;
+            --bg-cream: #F5F0E8;
+            --bg-light: #FAF7F2;
+            --text-dark: #2C1810;
+            --text-medium: #5C4A3A;
+            --shadow: rgba(139, 69, 102, 0.15);
+            --success: #7BA05B;
+            --warning: #E8A05D;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 102, 0.03) 0%, transparent 60%),
+                linear-gradient(45deg, rgba(107, 139, 126, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .art-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.035;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><path d="M300,150 Q350,100 400,150 T500,150" fill="none" stroke="%238B4566" stroke-width="2"/><circle cx="200" cy="400" r="80" fill="none" stroke="%236B8B7E" stroke-width="2"/><path d="M600,300 L650,250 L700,300 L650,350 Z" fill="none" stroke="%23D4A574" stroke-width="2"/></svg>');
+            background-size: 800px 600px;
+            background-repeat: repeat;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 30px 0;
+            box-shadow: 0 8px 32px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 15s infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, 50px) rotate(180deg); }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transform: rotate(-5deg);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .logo-text h1 {
+            font-family: 'Amiri', serif;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .logo-text p {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 12px 24px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .user-details h3 {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .main-content {
+            padding: 50px 0;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 100px auto;
+            background: white;
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h2 {
+            font-family: 'Amiri', serif;
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: var(--text-medium);
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E8E4DC;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 69, 102, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid #E8E4DC;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 50px;
+            border-radius: 24px;
+            box-shadow: 0 12px 48px var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .upload-zone {
+            border: 3px dashed var(--primary);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(139, 69, 102, 0.03) 0%, rgba(107, 139, 126, 0.03) 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-light);
+            background: linear-gradient(135deg, rgba(139, 69, 102, 0.08) 0%, rgba(107, 139, 126, 0.08) 100%);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(212, 165, 116, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .upload-text h3 {
+            font-family: 'Amiri', serif;
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .upload-text p {
+            color: var(--text-medium);
+            font-size: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px var(--shadow);
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar.active {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .artworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .artwork-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px var(--shadow);
+        }
+
+        .artwork-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .artwork-content {
+            padding: 25px;
+        }
+
+        .artwork-title {
+            font-family: 'Amiri', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .artwork-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: var(--text-medium);
+        }
+
+        .lesson-tag {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .score-display {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .total-score {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: var(--text-medium);
+            font-weight: 600;
+        }
+
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .criterion {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+        }
+
+        .criterion-name {
+            font-size: 13px;
+            color: var(--text-medium);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .criterion-score {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .feedback-section {
+            background: linear-gradient(135deg, rgba(139, 69, 102, 0.05), rgba(107, 139, 126, 0.05));
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border-right: 4px solid var(--accent);
+        }
+
+        .feedback-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-text {
+            line-height: 1.8;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        .comments-section {
+            margin-top: 30px;
+        }
+
+        .comment-form {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #E8E4DC;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .comment-item {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            border-right: 3px solid var(--accent);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+        }
+
+        .comment-date {
+            font-size: 12px;
+            color: var(--text-medium);
+        }
+
+        .comment-text {
+            line-height: 1.7;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .guidelines {
+            background: linear-gradient(135deg, rgba(123, 160, 91, 0.1), rgba(212, 165, 116, 0.1));
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--success);
+        }
+
+        .guidelines h4 {
+            color: var(--success);
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .guidelines ul {
+            list-style: none;
+            padding-right: 0;
+        }
+
+        .guidelines li {
+            padding: 8px 0;
+            color: var(--text-dark);
+            font-size: 14px;
+            position: relative;
+            padding-right: 25px;
+        }
+
+        .guidelines li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .teacher-dashboard {
+            margin-top: 30px;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .student-work-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .work-header {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .work-image-container {
+            position: relative;
+        }
+
+        .work-image {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .work-info h3 {
+            font-family: 'Amiri', serif;
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: var(--text-medium);
+            min-width: 100px;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+        }
+
+        .teacher-evaluation-form {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 30px;
+        }
+
+        .quick-notes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .quick-note-btn {
+            padding: 10px 18px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .quick-note-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .certificate {
+            background: linear-gradient(135deg, white, var(--bg-light));
+            border: 8px solid var(--primary);
+            border-radius: 24px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 20px 60px var(--shadow);
+            max-width: 800px;
+            margin: 50px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .certificate::before {
+            content: '🎨';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .certificate-header {
+            font-family: 'Amiri', serif;
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .certificate-body {
+            font-size: 24px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin: 30px 0;
+        }
+
+        .certificate-name {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 20px 0;
+        }
+
+        .certificate-footer {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .signature {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 200px;
+            height: 2px;
+            background: var(--primary);
+            margin: 20px auto 10px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(123, 160, 91, 0.2), rgba(123, 160, 91, 0.1));
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(107, 139, 126, 0.2), rgba(107, 139, 126, 0.1));
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-family: 'Amiri', serif;
+            font-size: 28px;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-medium);
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .artworks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .work-header {
+                grid-template-columns: 1fr;
+            }
+
+            .criteria-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-container {
+                padding: 30px 20px;
+                margin: 50px 20px;
+            }
+
+            .certificate {
+                padding: 40px 20px;
+            }
+
+            .certificate-header {
+                font-size: 32px;
+            }
+
+            .certificate-body {
+                font-size: 18px;
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 120px;
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-text {
+            font-size: 20px;
+            color: var(--text-medium);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="art-bg"></div>
+
+    <!-- صفحة البداية / الرئيسية -->
+    <div id="loginPage" class="page active">
+        <!-- قسم الترحيب وتسجيل الدخول -->
+        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); padding: 80px 0; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 600%22%3E%3Cpath d=%22M300,150 Q350,100 400,150 T500,150%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22/%3E%3Ccircle cx=%22200%22 cy=%22400%22 r=%2280%22 fill=%22none%22 stroke=%22white%22 stroke-width=%222%22/%3E%3C/svg%3E'); background-size: cover;"></div>
+            <div class="container" style="position: relative; z-index: 1;">
+                <div style="text-align: center; color: white;">
+                    <div style="font-size: 80px; margin-bottom: 20px; animation: bounce 2s infinite;">🎨</div>
+                    <h1 style="font-family: 'Amiri', serif; font-size: 56px; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">
+                        منصة تقييم الأعمال الفنية
+                    </h1>
+                    <p style="font-size: 24px; opacity: 0.95; max-width: 800px; margin: 0 auto 30px; line-height: 1.8; text-shadow: 1px 1px 5px rgba(0,0,0,0.2);">
+                        مرحباً بك في بيئة فنية محفزة وآمنة حيث يمكنك رفع أعمالك الفنية، الحصول على تقييم ذكي فوري، 
+                        مشاركة إبداعاتك مع زميلاتك، والتعلم من خلال التعليقات البناءة
+                    </p>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px;">
+                        <button onclick="scrollToLogin()" class="btn btn-primary" style="background: white; color: var(--primary); padding: 18px 40px; font-size: 18px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);">
+                            تسجيل الدخول 🔐
+                        </button>
+                        <button onclick="scrollToGallery()" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 18px 40px; font-size: 18px; backdrop-filter: blur(10px);">
+                            معرض الأعمال 🖼️
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم تسجيل الدخول -->
+        <div id="loginSection" style="padding: 60px 0;">
+            <div class="auth-container" style="margin: 0 auto;">
+                <div class="auth-header">
+                    <div style="font-size: 64px; margin-bottom: 20px;">✨</div>
+                    <h2>تسجيل الدخول</h2>
+                    <p>ادخلي باسمك الحقيقي وابدئي رحلتك الفنية</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="loginUsername" placeholder="مثال: مريم أحمد محمد" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="loginPassword" placeholder="اختاري كلمة مرور سهلة التذكر" required>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(139, 69, 102, 0.1), rgba(107, 139, 126, 0.1)); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-right: 3px solid var(--primary);">
+                        <p style="font-size: 13px; color: var(--text-dark); line-height: 1.6; margin: 0;">
+                            💡 <strong>للطالبات:</strong> اكتبي اسمك الحقيقي الكامل<br>
+                            👩‍🏫 <strong>للمعلمة:</strong> اسم المستخدم: معلمة | كلمة المرور: 1234
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                    <button type="button" class="btn btn-secondary" onclick="showPage('registerPage')">إنشاء حساب جديد (اختياري)</button>
+                    <button type="button" onclick="resetSystem()" style="margin-top: 20px; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-family: 'Cairo', sans-serif; font-size: 13px;">
+                        🔄 إعادة تعيين النظام (في حالة وجود مشاكل)
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- قسم معرض الأعمال -->
+        <div id="gallerySection" style="background: var(--bg-light); padding: 80px 0;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 50px;">
+                    <h2 style="font-family: 'Amiri', serif; font-size: 48px; color: var(--primary); margin-bottom: 20px;">
+                        🖼️ معرض الأعمال الفنية
+                    </h2>
+                    <p style="font-size: 18px; color: var(--text-medium); max-width: 700px; margin: 0 auto;">
+                        استكشفي إبداعات زميلاتك، شاركي برأيك البناء، وتعلمي من تجاربهن الفنية
+                    </p>
+                </div>
+
+                <!-- إرشادات التعليق -->
+                <div class="guidelines" style="max-width: 900px; margin: 0 auto 40px;">
+                    <h4 style="font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🌟</span> إرشادات التعليق البناء
+                    </h4>
+                    <ul style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <li>كوني إيجابية ومشجعة دائماً</li>
+                        <li>ابدئي بذكر ما أعجبك في العمل</li>
+                        <li>قدمي اقتراحات بناءة وليس انتقادات جارحة</li>
+                        <li>استخدمي لغة محترمة ولطيفة</li>
+                        <li>ركزي على العمل الفني وليس على الشخص</li>
+                        <li>شاركي ما تعلمتيه من العمل</li>
+                    </ul>
+                </div>
+
+                <!-- عرض الأعمال -->
+                <div id="publicGallery" class="artworks-grid"></div>
+
+                <div id="emptyGallery" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">🎨</div>
+                    <div class="empty-state-text">لا توجد أعمال في المعرض بعد</div>
+                    <p style="color: var(--text-medium); margin-top: 10px;">سجلي الدخول وارفعي أول عمل فني! ✨</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة التسجيل -->
+    <div id="registerPage" class="page">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div style="font-size: 64px; margin-bottom: 20px;">✨</div>
+                <h2>إنشاء حساب جديد</h2>
+                <p>انضمي إلى مجتمع الفنانات المبدعات</p>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="regFullName" required>
+                </div>
+                <div class="form-group">
+                    <label>الصف / الشعبة</label>
+                    <input type="text" id="regClass" placeholder="مثال: الصف العاشر - أ" required>
+                </div>
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">إنشاء الحساب</button>
+                <button type="button" class="btn btn-secondary" onclick="showPage('loginPage')">لدي حساب بالفعل</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الطالبة -->
+    <div id="studentDashboard" class="page">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-icon">🎨</div>
+                        <div class="logo-text">
+                            <h1>منصة تقييم الأعمال الفنية</h1>
+                            <p>رحلتك الإبداعية تبدأ هنا</p>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="studentAvatar">م</div>
+                        <div class="user-details">
+                            <h3 id="studentName">مريم أحمد</h3>
+                            <p id="studentClass">الصف العاشر - أ</p>
+                        </div>
+                        <button class="logout-btn" onclick="goToStudentHome()" style="margin-left: 10px;">
+                            🏠 الرئيسية
+                        </button>
+                        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container main-content">
+            <!-- إحصائيات سريعة -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="totalWorks">0</div>
+                    <div class="stat-label">إجمالي الأعمال</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="avgScore">0%</div>
+                    <div class="stat-label">متوسط التقييم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="certificates">0</div>
+                    <div class="stat-label">الشهادات المكتسبة</div>
+                </div>
+            </div>
+
+            <!-- قسم رفع العمل الجديد -->
+            <div class="upload-section">
+                <h2 style="font-family: 'Amiri', serif; font-size: 32px; color: var(--primary); margin-bottom: 30px; text-align: center;">
+                    رفع عمل فني جديد 🖌️
+                </h2>
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label>عنوان العمل (اختياري)</label>
+                        <input type="text" id="artworkTitle" placeholder="أدخلي عنواناً معبراً لعملك الفني">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الدرس</label>
+                        <select id="lessonType" required>
+                            <option value="">اختاري نوع الدرس</option>
+                            <option value="portrait">بورتريه</option>
+                            <option value="still-life">طبيعة صامتة</option>
+                            <option value="landscape">منظر طبيعي</option>
+                            <option value="abstract">فن تجريدي</option>
+                            <option value="calligraphy">خط عربي</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">🎨</div>
+                        <div class="upload-text">
+                            <h3>اسحبي الصورة هنا أو انقري للاختيار</h3>
+                            <p>الصيغ المدعومة: JPG, PNG (الحد الأقصى 10MB)</p>
+                        </div>
+                        <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png" required>
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <img id="imagePreview" class="image-preview" alt="معاينة العمل">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 30px;">
+                        إرسال عملي الفني للتقييم ✨
+                    </button>
+                </form>
+            </div>
+
+            <!-- عرض الأعمال السابقة -->
+            <div style="margin-top: 60px;">
+                <h2 style="font-family: 'Amiri', serif; font-size: 32px; color: var(--primary); margin-bottom: 30px;">
+                    أعمالي الفنية السابقة 🖼️
+                </h2>
+                <div class="artworks-grid" id="studentArtworks"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم المعلمة -->
+    <div id="teacherDashboard" class="page">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-icon">👩‍🏫</div>
+                        <div class="logo-text">
+                            <h1>لوحة تحكم المعلمة</h1>
+                            <p>إدارة وتقييم أعمال الطالبات</p>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar">أ</div>
+                        <div class="user-details">
+                            <h3>أ. فاطمة محمد</h3>
+                            <p>معلمة التربية الفنية</p>
+                        </div>
+                        <button class="logout-btn" onclick="goToTeacherHome()" style="margin-left: 10px;">
+                            🏠 الرئيسية
+                        </button>
+                        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container main-content teacher-dashboard">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="totalStudentWorks">0</div>
+                    <div class="stat-label">إجمالي الأعمال</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value" id="pendingReviews">0</div>
+                    <div class="stat-label">أعمال في انتظار التقييم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="reviewedWorks">0</div>
+                    <div class="stat-label">أعمال تم تقييمها</div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>البحث بالاسم</label>
+                    <input type="text" id="searchStudent" placeholder="ابحثي عن طالبة...">
+                </div>
+                <div class="filter-group">
+                    <label>تصفية حسب الصف</label>
+                    <select id="filterClass">
+                        <option value="">جميع الصفوف</option>
+                        <option value="10">الصف العاشر</option>
+                        <option value="11">الصف الحادي عشر</option>
+                        <option value="12">الصف الثاني عشر</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>حالة التقييم</label>
+                    <select id="filterStatus">
+                        <option value="">جميع الحالات</option>
+                        <option value="pending">في الانتظار</option>
+                        <option value="reviewed">تم التقييم</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="teacherWorksList"></div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض تفاصيل العمل -->
+    <div id="artworkModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalArtworkTitle">تفاصيل العمل الفني</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalArtworkContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // قاعدة بيانات محلية (في المشروع الحقيقي تستبدل بقاعدة بيانات سحابية)
+        const DB = {
+            students: JSON.parse(localStorage.getItem('students') || '[]'),
+            teachers: JSON.parse(localStorage.getItem('teachers') || '[{"username":"معلمة","password":"1234","fullName":"أ. فاطمة محمد"}]'),
+            artworks: JSON.parse(localStorage.getItem('artworks') || '[]'),
+            aiEvaluations: JSON.parse(localStorage.getItem('aiEvaluations') || '[]'),
+            teacherEvaluations: JSON.parse(localStorage.getItem('teacherEvaluations') || '[]'),
+            comments: JSON.parse(localStorage.getItem('comments') || '[]'),
+            certificates: JSON.parse(localStorage.getItem('certificates') || '[]'),
+            
+            save() {
+                localStorage.setItem('students', JSON.stringify(this.students));
+                localStorage.setItem('teachers', JSON.stringify(this.teachers));
+                localStorage.setItem('artworks', JSON.stringify(this.artworks));
+                localStorage.setItem('aiEvaluations', JSON.stringify(this.aiEvaluations));
+                localStorage.setItem('teacherEvaluations', JSON.stringify(this.teacherEvaluations));
+                localStorage.setItem('comments', JSON.stringify(this.comments));
+                localStorage.setItem('certificates', JSON.stringify(this.certificates));
+            }
+        };
+
+        let currentUser = null;
+        let currentUserType = null; // 'student' or 'teacher'
+
+        // تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!fullName) {
+                alert('الرجاء إدخال اسمك الكامل');
+                return;
+            }
+
+            // البحث في المعلمات أولاً - بالاسم الكامل أو username
+            const teacher = DB.teachers.find(t => 
+                (t.username === fullName || t.fullName === fullName || 
+                 t.username.includes(fullName) || t.fullName.includes(fullName)) 
+                && t.password === password
+            );
+            
+            if (teacher) {
+                currentUser = teacher;
+                currentUserType = 'teacher';
+                console.log('تسجيل دخول معلمة:', teacher);
+                showPage('teacherDashboard');
+                loadTeacherDashboard();
+                return;
+            }
+
+            // البحث في الطالبات باستخدام الاسم الكامل
+            let student = DB.students.find(s => s.fullName === fullName || s.username === fullName);
+            
+            // إذا لم توجد الطالبة، ننشئ حساباً تلقائياً لها
+            if (!student) {
+                student = {
+                    id: Date.now(),
+                    fullName: fullName,
+                    classSection: 'غير محدد',
+                    username: fullName,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                };
+                DB.students.push(student);
+                DB.save();
+                console.log('تم إنشاء حساب طالبة جديد:', student);
+            }
+
+            // تسجيل الدخول
+            currentUser = student;
+            currentUserType = 'student';
+            console.log('تسجيل دخول طالبة:', student);
+            showPage('studentDashboard');
+            loadStudentDashboard();
+        });
+
+        // التسجيل
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regFullName').value;
+            const classSection = document.getElementById('regClass').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+
+            // التحقق من عدم وجود نفس اسم المستخدم
+            if (DB.students.some(s => s.username === username)) {
+                alert('اسم المستخدم موجود بالفعل، اختاري اسماً آخر');
+                return;
+            }
+
+            const newStudent = {
+                id: Date.now(),
+                fullName,
+                classSection,
+                username,
+                password,
+                createdAt: new Date().toISOString()
+            };
+
+            DB.students.push(newStudent);
+            DB.save();
+
+            alert('تم إنشاء الحساب بنجاح! 🎉');
+            showPage('loginPage');
+            document.getElementById('registerForm').reset();
+        });
+
+        // رفع الصورة
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('imagePreview').src = event.target.result;
+                    document.getElementById('previewContainer').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // السحب والإفلات
+        const uploadZone = document.getElementById('uploadZone');
+        uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', function() {
+            this.classList.remove('dragover');
+        });
+        uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+                document.getElementById('fileInput').files = e.dataTransfer.files;
+                const event = new Event('change');
+                document.getElementById('fileInput').dispatchEvent(event);
+            }
+        });
+
+        // إرسال العمل للتقييم
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('artworkTitle').value || 'عمل فني';
+            const lessonType = document.getElementById('lessonType').value;
+            const imageFile = document.getElementById('fileInput').files[0];
+
+            if (!imageFile) {
+                alert('الرجاء اختيار صورة');
+                return;
+            }
+
+            // محاكاة رفع الملف
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            progressBar.classList.add('active');
+
+            for (let i = 0; i <= 100; i += 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                progressFill.style.width = i + '%';
+            }
+
+            // حفظ الصورة كـ base64
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const imageUrl = event.target.result;
+
+                const artwork = {
+                    id: Date.now(),
+                    studentId: currentUser.id,
+                    title,
+                    lessonType,
+                    imageUrl,
+                    submissionDate: new Date().toISOString(),
+                    status: 'submitted'
+                };
+
+                DB.artworks.push(artwork);
+                
+                // تقييم الذكاء الاصطناعي
+                const aiEval = await evaluateWithAI(artwork);
+                DB.aiEvaluations.push(aiEval);
+                
+                artwork.status = 'ai-evaluated';
+                DB.save();
+
+                alert('تم استلام عملك الفني بنجاح وجارٍ تقييمه 🎨');
+                
+                // إعادة تعيين النموذج
+                document.getElementById('uploadForm').reset();
+                document.getElementById('previewContainer').classList.remove('active');
+                progressBar.classList.remove('active');
+                progressFill.style.width = '0%';
+
+                // تحديث القائمة
+                loadStudentDashboard();
+            };
+            reader.readAsDataURL(imageFile);
+        });
+
+        // محاكاة تقييم الذكاء الاصطناعي
+        async function evaluateWithAI(artwork) {
+            // محاكاة استدعاء API للذكاء الاصطناعي
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            const criteria = {
+                artElements: Math.floor(Math.random() * 20) + 75,
+                proportions: Math.floor(Math.random() * 20) + 75,
+                composition: Math.floor(Math.random() * 20) + 75,
+                lightShadow: Math.floor(Math.random() * 20) + 75,
+                technicalSkill: Math.floor(Math.random() * 20) + 75,
+                creativity: Math.floor(Math.random() * 20) + 80
+            };
+
+            const totalScore = Math.round(
+                (criteria.artElements + criteria.proportions + criteria.composition + 
+                 criteria.lightShadow + criteria.technicalSkill + criteria.creativity) / 6
+            );
+
+            const feedbacks = [
+                'عمل رائع يظهر فهماً عميقاً لعناصر الفن! 🌟',
+                'أحسنت في استخدام التكوين والتوازن في العمل',
+                'مهارات تقنية ممتازة، استمري في التطور',
+                'إبداع واضح في التعبير الشخصي، جميل جداً!',
+                'النِّسَب والبناء الشكلي متقن، عمل احترافي'
+            ];
+
+            const feedback = feedbacks[Math.floor(Math.random() * feedbacks.length)] + ' ' +
+                'لاحظت اهتماماً خاصاً بالتفاصيل في عملك. ' +
+                (totalScore >= 85 ? 'أنت على الطريق الصحيح نحو الإتقان! 🎨' : 
+                 'هناك مجال للتحسين في بعض الجوانب، واصلي التدريب والتطوير.');
+
+            return {
+                id: Date.now(),
+                artworkId: artwork.id,
+                ...criteria,
+                totalScore,
+                feedback,
+                evaluatedAt: new Date().toISOString()
+            };
+        }
+
+        // تحميل لوحة تحكم الطالبة
+        function loadStudentDashboard() {
+            document.getElementById('studentName').textContent = currentUser.fullName;
+            document.getElementById('studentClass').textContent = currentUser.classSection;
+            document.getElementById('studentAvatar').textContent = currentUser.fullName.charAt(0);
+
+            const studentWorks = DB.artworks.filter(a => a.studentId === currentUser.id);
+            document.getElementById('totalWorks').textContent = studentWorks.length;
+
+            const evaluatedWorks = studentWorks.filter(w => w.status === 'ai-evaluated' || w.status === 'teacher-reviewed');
+            const avgScore = evaluatedWorks.length > 0 
+                ? Math.round(evaluatedWorks.reduce((sum, work) => {
+                    const aiEval = DB.aiEvaluations.find(e => e.artworkId === work.id);
+                    return sum + (aiEval ? aiEval.totalScore : 0);
+                }, 0) / evaluatedWorks.length)
+                : 0;
+            document.getElementById('avgScore').textContent = avgScore + '%';
+
+            const certs = DB.certificates.filter(c => c.studentId === currentUser.id);
+            document.getElementById('certificates').textContent = certs.length;
+
+            // عرض الأعمال
+            displayStudentArtworks();
+        }
+
+        // عرض أعمال الطالبة
+        function displayStudentArtworks() {
+            const container = document.getElementById('studentArtworks');
+            const works = DB.artworks.filter(a => a.studentId === currentUser.id).reverse();
+
+            if (works.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎨</div>
+                        <div class="empty-state-text">لم تقومي برفع أي أعمال فنية بعد</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = works.map(work => {
+                const aiEval = DB.aiEvaluations.find(e => e.artworkId === work.id);
+                const teacherEval = DB.teacherEvaluations.find(e => e.artworkId === work.id);
+                const lessonTypes = {
+                    'portrait': 'بورتريه',
+                    'still-life': 'طبيعة صامتة',
+                    'landscape': 'منظر طبيعي',
+                    'abstract': 'فن تجريدي',
+                    'calligraphy': 'خط عربي',
+                    'other': 'أخرى'
+                };
+
+                return `
+                    <div class="artwork-card" onclick="viewArtworkDetails(${work.id})">
+                        <img src="${work.imageUrl}" alt="${work.title}" class="artwork-image">
+                        <div class="artwork-content">
+                            <div class="artwork-title">${work.title}</div>
+                            <div class="artwork-meta">
+                                <span class="lesson-tag">${lessonTypes[work.lessonType]}</span>
+                                <span>${new Date(work.submissionDate).toLocaleDateString('ar-SA')}</span>
+                            </div>
+                            ${aiEval ? `
+                                <div class="score-display">
+                                    <div class="score-header">
+                                        <span class="score-label">التقييم الإجمالي</span>
+                                        <span class="total-score">${aiEval.totalScore}%</span>
+                                    </div>
+                                </div>
+                            ` : '<div class="alert alert-info">جارٍ التقييم...</div>'}
+                            ${teacherEval ? `
+                                <div style="background: var(--bg-light); padding: 15px; border-radius: 12px; margin-top: 15px;">
+                                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 5px;">
+                                        تقييم المعلمة: ${teacherEval.score}%
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // عرض تفاصيل العمل الفني
+        function viewArtworkDetails(artworkId) {
+            const work = DB.artworks.find(a => a.id === artworkId);
+            const aiEval = DB.aiEvaluations.find(e => e.artworkId === artworkId);
+            const teacherEval = DB.teacherEvaluations.find(e => e.artworkId === artworkId);
+            const comments = DB.comments.filter(c => c.artworkId === artworkId);
+
+            const lessonTypes = {
+                'portrait': 'بورتريه',
+                'still-life': 'طبيعة صامتة',
+                'landscape': 'منظر طبيعي',
+                'abstract': 'فن تجريدي',
+                'calligraphy': 'خط عربي',
+                'other': 'أخرى'
+            };
+
+            let content = `
+                <img src="${work.imageUrl}" style="width: 100%; border-radius: 16px; margin-bottom: 25px;">
+                
+                <div class="info-row">
+                    <span class="info-label">العنوان:</span>
+                    <span class="info-value">${work.title}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">نوع الدرس:</span>
+                    <span class="info-value">${lessonTypes[work.lessonType]}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">تاريخ الرفع:</span>
+                    <span class="info-value">${new Date(work.submissionDate).toLocaleDateString('ar-SA')}</span>
+                </div>
+            `;
+
+            if (aiEval) {
+                content += `
+                    <div class="score-display" style="margin-top: 30px;">
+                        <div class="score-header">
+                            <span class="score-label">🤖 تقييم الذكاء الاصطناعي</span>
+                            <span class="total-score">${aiEval.totalScore}%</span>
+                        </div>
+                        
+                        <div class="criteria-grid">
+                            <div class="criterion">
+                                <div class="criterion-name">عناصر الفن</div>
+                                <div class="criterion-score">${aiEval.artElements}%</div>
+                            </div>
+                            <div class="criterion">
+                                <div class="criterion-name">النِّسَب والبناء</div>
+                                <div class="criterion-score">${aiEval.proportions}%</div>
+                            </div>
+                            <div class="criterion">
+                                <div class="criterion-name">التكوين والتوازن</div>
+                                <div class="criterion-score">${aiEval.composition}%</div>
+                            </div>
+                            <div class="criterion">
+                                <div class="criterion-name">الضوء والظل</div>
+                                <div class="criterion-score">${aiEval.lightShadow}%</div>
+                            </div>
+                            <div class="criterion">
+                                <div class="criterion-name">المهارة التقنية</div>
+                                <div class="criterion-score">${aiEval.technicalSkill}%</div>
+                            </div>
+                            <div class="criterion">
+                                <div class="criterion-name">الإبداع والتعبير</div>
+                                <div class="criterion-score">${aiEval.creativity}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-section">
+                        <div class="feedback-title">💬 التغذية الراجعة</div>
+                        <div class="feedback-text">${aiEval.feedback}</div>
+                    </div>
+                `;
+            }
+
+            if (teacherEval) {
+                content += `
+                    <div class="feedback-section" style="background: linear-gradient(135deg, rgba(123, 160, 91, 0.1), rgba(212, 165, 116, 0.1)); border-right-color: var(--success);">
+                        <div class="feedback-title">👩‍🏫 تقييم المعلمة: ${teacherEval.score}%</div>
+                        <div class="feedback-text">${teacherEval.notes}</div>
+                    </div>
+                `;
+            }
+
+            // قسم التعليقات
+            if (currentUserType === 'student') {
+                content += `
+                    <div class="comments-section">
+                        <h3 style="font-family: 'Amiri', serif; font-size: 24px; color: var(--primary); margin-bottom: 20px;">
+                            💬 تعليقات الزميلات
+                        </h3>
+                        
+                        <div class="guidelines">
+                            <h4>📝 إرشادات التعليق</h4>
+                            <ul>
+                                <li>كوني مشجعة ومحفزة</li>
+                                <li>قدمي نصيحة بناءة ومفيدة</li>
+                                <li>يمنع النقد الجارح أو السلبي</li>
+                            </ul>
+                        </div>
+
+                        <div class="comment-form">
+                            <textarea id="commentText" placeholder="اكتبي تعليقاً مشجعاً..."></textarea>
+                            <button class="btn btn-primary" style="margin-top: 15px;" onclick="addComment(${artworkId})">
+                                إضافة تعليق 💬
+                            </button>
+                        </div>
+
+                        <div id="commentsList">
+                            ${comments.map(c => `
+                                <div class="comment-item">
+                                    <div class="comment-header">
+                                        <span class="comment-author">${c.studentName}</span>
+                                        <span class="comment-date">${new Date(c.date).toLocaleDateString('ar-SA')}</span>
+                                    </div>
+                                    <div class="comment-text">${c.text}</div>
+                                </div>
+                            `).join('') || '<p style="text-align: center; color: var(--text-medium); padding: 20px;">لا توجد تعليقات بعد</p>'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalArtworkTitle').textContent = work.title;
+            document.getElementById('modalArtworkContent').innerHTML = content;
+            document.getElementById('artworkModal').classList.add('active');
+        }
+
+        // إضافة تعليق
+        function addComment(artworkId) {
+            const text = document.getElementById('commentText').value.trim();
+            if (!text) {
+                alert('الرجاء كتابة تعليق');
+                return;
+            }
+
+            const comment = {
+                id: Date.now(),
+                artworkId,
+                studentName: currentUser.fullName,
+                text,
+                date: new Date().toISOString(),
+                isFlagged: false
+            };
+
+            DB.comments.push(comment);
+            DB.save();
+
+            alert('تم إضافة تعليقك بنجاح! 💬');
+            viewArtworkDetails(artworkId); // تحديث العرض
+        }
+
+        // تحميل لوحة تحكم المعلمة
+        function loadTeacherDashboard() {
+            const allWorks = DB.artworks;
+            document.getElementById('totalStudentWorks').textContent = allWorks.length;
+
+            const pending = allWorks.filter(w => w.status === 'ai-evaluated').length;
+            document.getElementById('pendingReviews').textContent = pending;
+
+            const reviewed = allWorks.filter(w => w.status === 'teacher-reviewed').length;
+            document.getElementById('reviewedWorks').textContent = reviewed;
+
+            displayTeacherWorks();
+        }
+
+        // عرض أعمال الطالبات للمعلمة
+        function displayTeacherWorks() {
+            const container = document.getElementById('teacherWorksList');
+            const works = DB.artworks.slice().reverse();
+
+            if (works.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <div class="empty-state-text">لا توجد أعمال مرفوعة بعد</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = works.map(work => {
+                const student = DB.students.find(s => s.id === work.studentId);
+                const aiEval = DB.aiEvaluations.find(e => e.artworkId === work.id);
+                const teacherEval = DB.teacherEvaluations.find(e => e.artworkId === work.id);
+                
+                const lessonTypes = {
+                    'portrait': 'بورتريه',
+                    'still-life': 'طبيعة صامتة',
+                    'landscape': 'منظر طبيعي',
+                    'abstract': 'فن تجريدي',
+                    'calligraphy': 'خط عربي',
+                    'other': 'أخرى'
+                };
+
+                return `
+                    <div class="student-work-card">
+                        <div class="work-header">
+                            <div class="work-image-container">
+                                <img src="${work.imageUrl}" alt="${work.title}" class="work-image">
+                            </div>
+                            <div class="work-info">
+                                <h3>${work.title}</h3>
+                                <div class="info-row">
+                                    <span class="info-label">الطالبة:</span>
+                                    <span class="info-value">${student.fullName}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">الصف:</span>
+                                    <span class="info-value">${student.classSection}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">نوع الدرس:</span>
+                                    <span class="info-value">${lessonTypes[work.lessonType]}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">التاريخ:</span>
+                                    <span class="info-value">${new Date(work.submissionDate).toLocaleDateString('ar-SA')}</span>
+                                </div>
+                                ${aiEval ? `
+                                    <div class="info-row">
+                                        <span class="info-label">تقييم الذكاء الاصطناعي:</span>
+                                        <span class="info-value" style="font-size: 20px; font-weight: 700; color: var(--primary);">
+                                            ${aiEval.totalScore}%
+                                        </span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        ${aiEval ? `
+                            <div class="score-display">
+                                <h4 style="margin-bottom: 15px; color: var(--primary);">تفاصيل تقييم الذكاء الاصطناعي</h4>
+                                <div class="criteria-grid">
+                                    <div class="criterion">
+                                        <div class="criterion-name">عناصر الفن</div>
+                                        <div class="criterion-score">${aiEval.artElements}%</div>
+                                    </div>
+                                    <div class="criterion">
+                                        <div class="criterion-name">النِّسَب والبناء</div>
+                                        <div class="criterion-score">${aiEval.proportions}%</div>
+                                    </div>
+                                    <div class="criterion">
+                                        <div class="criterion-name">التكوين والتوازن</div>
+                                        <div class="criterion-score">${aiEval.composition}%</div>
+                                    </div>
+                                    <div class="criterion">
+                                        <div class="criterion-name">الضوء والظل</div>
+                                        <div class="criterion-score">${aiEval.lightShadow}%</div>
+                                    </div>
+                                    <div class="criterion">
+                                        <div class="criterion-name">المهارة التقنية</div>
+                                        <div class="criterion-score">${aiEval.technicalSkill}%</div>
+                                    </div>
+                                    <div class="criterion">
+                                        <div class="criterion-name">الإبداع والتعبير</div>
+                                        <div class="criterion-score">${aiEval.creativity}%</div>
+                                    </div>
+                                </div>
+                                <div class="feedback-section">
+                                    <div class="feedback-title">💬 ملاحظات الذكاء الاصطناعي</div>
+                                    <div class="feedback-text">${aiEval.feedback}</div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="teacher-evaluation-form">
+                            <h4 style="font-family: 'Amiri', serif; font-size: 24px; color: var(--primary); margin-bottom: 20px;">
+                                تقييم المعلمة
+                            </h4>
+                            
+                            <div class="form-group">
+                                <label>الدرجة النهائية (%)</label>
+                                <input type="number" id="teacherScore-${work.id}" min="0" max="100" 
+                                    value="${teacherEval ? teacherEval.score : (aiEval ? aiEval.totalScore : 85)}" 
+                                    style="font-size: 18px; font-weight: 700; color: var(--primary);">
+                            </div>
+
+                            <div class="quick-notes">
+                                <button class="quick-note-btn" onclick="addQuickNote(${work.id}, 'عمل ممتاز، أحسنت!')">عمل ممتاز</button>
+                                <button class="quick-note-btn" onclick="addQuickNote(${work.id}, 'تقنية رائعة')">تقنية رائعة</button>
+                                <button class="quick-note-btn" onclick="addQuickNote(${work.id}, 'إبداع واضح')">إبداع واضح</button>
+                                <button class="quick-note-btn" onclick="addQuickNote(${work.id}, 'بحاجة لمزيد من التركيز على التفاصيل')">تحسين التفاصيل</button>
+                                <button class="quick-note-btn" onclick="addQuickNote(${work.id}, 'واصلي التطور')">واصلي التطور</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ملاحظات المعلمة</label>
+                                <textarea id="teacherNotes-${work.id}" rows="4" 
+                                    placeholder="اكتبي ملاحظاتك وتوجيهاتك للطالبة...">${teacherEval ? teacherEval.notes : ''}</textarea>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="saveTeacherEvaluation(${work.id})">
+                                ${teacherEval ? 'تحديث التقييم' : 'حفظ التقييم'} ✅
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // إضافة ملاحظة سريعة
+        function addQuickNote(artworkId, note) {
+            const textarea = document.getElementById(`teacherNotes-${artworkId}`);
+            if (textarea.value.trim()) {
+                textarea.value += '\n• ' + note;
+            } else {
+                textarea.value = '• ' + note;
+            }
+        }
+
+        // حفظ تقييم المعلمة
+        function saveTeacherEvaluation(artworkId) {
+            const score = parseInt(document.getElementById(`teacherScore-${artworkId}`).value);
+            const notes = document.getElementById(`teacherNotes-${artworkId}`).value.trim();
+
+            if (!notes) {
+                alert('الرجاء إضافة ملاحظات للطالبة');
+                return;
+            }
+
+            if (score < 0 || score > 100) {
+                alert('الدرجة يجب أن تكون بين 0 و 100');
+                return;
+            }
+
+            const existingEval = DB.teacherEvaluations.findIndex(e => e.artworkId === artworkId);
+            const evaluation = {
+                id: existingEval >= 0 ? DB.teacherEvaluations[existingEval].id : Date.now(),
+                artworkId,
+                score,
+                notes,
+                date: new Date().toISOString()
+            };
+
+            if (existingEval >= 0) {
+                DB.teacherEvaluations[existingEval] = evaluation;
+            } else {
+                DB.teacherEvaluations.push(evaluation);
+            }
+
+            const artwork = DB.artworks.find(a => a.id === artworkId);
+            artwork.status = 'teacher-reviewed';
+
+            // إصدار شهادة إذا كانت الدرجة ممتازة
+            if (score >= 90) {
+                const student = DB.students.find(s => s.id === artwork.studentId);
+                const existingCert = DB.certificates.find(c => c.artworkId === artworkId);
+                
+                if (!existingCert) {
+                    DB.certificates.push({
+                        id: Date.now(),
+                        studentId: artwork.studentId,
+                        artworkId,
+                        issueDate: new Date().toISOString(),
+                        type: 'excellence'
+                    });
+                    alert(`تم حفظ التقييم وإصدار شهادة تميز للطالبة ${student.fullName}! 🏆`);
+                } else {
+                    alert('تم حفظ التقييم بنجاح! ✅');
+                }
+            } else {
+                alert('تم حفظ التقييم بنجاح! ✅');
+            }
+
+            DB.save();
+            loadTeacherDashboard();
+        }
+
+        // عرض/إخفاء الصفحات
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            currentUser = null;
+            currentUserType = null;
+            showPage('loginPage');
+        }
+
+        // الرجوع للصفحة الرئيسية للطالبة
+        function goToStudentHome() {
+            closeModal();
+            if (currentUserType === 'student') {
+                loadStudentDashboard();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // الرجوع للصفحة الرئيسية للمعلمة
+        function goToTeacherHome() {
+            closeModal();
+            if (currentUserType === 'teacher') {
+                loadTeacherDashboard();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // إغلاق النافذة المنبثقة
+        function closeModal() {
+            document.getElementById('artworkModal').classList.remove('active');
+        }
+
+        // إغلاق النافذة عند النقر خارجها
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // تهيئة البيانات التجريبية
+        function initDemoData() {
+            // التأكد من وجود حساب المعلمة فقط
+            if (DB.teachers.length === 0) {
+                DB.teachers = [{
+                    username: 'معلمة',
+                    password: '1234',
+                    fullName: 'أ. فاطمة محمد'
+                }];
+                DB.save();
+            }
+
+            // إضافة بيانات تجريبية لعرض كيفية عمل النظام (اختياري - يمكن حذفه لاحقاً)
+            if (DB.students.length === 0 && DB.artworks.length === 0) {
+                // إضافة طالبة تجريبية
+                const demoStudent = {
+                    id: 1,
+                    fullName: 'مريم أحمد محمد',
+                    classSection: 'الصف العاشر - أ',
+                    username: 'مريم أحمد محمد',
+                    password: '123456',
+                    createdAt: new Date().toISOString()
+                };
+                DB.students.push(demoStudent);
+
+                // إضافة عمل فني تجريبي
+                const demoArtwork = {
+                    id: Date.now(),
+                    studentId: 1,
+                    title: 'بورتريه تجريبي',
+                    lessonType: 'portrait',
+                    imageUrl: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23f5f0e8" width="400" height="400"/%3E%3Ctext x="50%25" y="50%25" font-size="20" text-anchor="middle" fill="%238B4566" font-family="Arial"%3Eعمل فني تجريبي%3C/text%3E%3C/svg%3E',
+                    submissionDate: new Date().toISOString(),
+                    status: 'ai-evaluated'
+                };
+                DB.artworks.push(demoArtwork);
+
+                // إضافة تقييم ذكاء اصطناعي تجريبي
+                const demoAiEval = {
+                    id: Date.now(),
+                    artworkId: demoArtwork.id,
+                    artElements: 85,
+                    proportions: 88,
+                    composition: 90,
+                    lightShadow: 82,
+                    technicalSkill: 87,
+                    creativity: 92,
+                    totalScore: 87,
+                    feedback: 'عمل رائع يظهر فهماً عميقاً لعناصر الفن! 🌟 أحسنت في استخدام التكوين والتوازن في العمل',
+                    evaluatedAt: new Date().toISOString()
+                };
+                DB.aiEvaluations.push(demoAiEval);
+
+                DB.save();
+            }
+        }
+
+        // تشغيل عند تحميل الصفحة
+        window.addEventListener('load', function() {
+            initDemoData();
+            loadPublicGallery(); // تحميل معرض الأعمال
+        });
+
+        // إعادة تعيين النظام
+        function resetSystem() {
+            if (confirm('هل أنت متأكدة من إعادة تعيين النظام؟ سيتم حذف جميع البيانات!')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // التنقل السلس لقسم تسجيل الدخول
+        function scrollToLogin() {
+            document.getElementById('loginSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // التنقل السلس لمعرض الأعمال
+        function scrollToGallery() {
+            document.getElementById('gallerySection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // تحميل معرض الأعمال العام
+        function loadPublicGallery() {
+            const container = document.getElementById('publicGallery');
+            const emptyState = document.getElementById('emptyGallery');
+            
+            // جلب جميع الأعمال المقيمة
+            const allArtworks = DB.artworks.filter(a => a.status !== 'submitted').reverse();
+
+            if (allArtworks.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = allArtworks.map(work => {
+                const student = DB.students.find(s => s.id === work.studentId);
+                const aiEval = DB.aiEvaluations.find(e => e.artworkId === work.id);
+                const comments = DB.comments.filter(c => c.artworkId === work.id);
+                
+                const lessonTypes = {
+                    'portrait': 'بورتريه',
+                    'still-life': 'طبيعة صامتة',
+                    'landscape': 'منظر طبيعي',
+                    'abstract': 'فن تجريدي',
+                    'calligraphy': 'خط عربي',
+                    'other': 'أخرى'
+                };
+
+                return `
+                    <div class="artwork-card" onclick="viewPublicArtwork(${work.id})">
+                        <img src="${work.imageUrl}" alt="${work.title}" class="artwork-image">
+                        <div class="artwork-content">
+                            <div class="artwork-title">${work.title}</div>
+                            <div style="font-size: 14px; color: var(--text-medium); margin-bottom: 10px;">
+                                بواسطة: <strong>${student ? student.fullName : 'طالبة'}</strong>
+                            </div>
+                            <div class="artwork-meta">
+                                <span class="lesson-tag">${lessonTypes[work.lessonType]}</span>
+                                <span>${new Date(work.submissionDate).toLocaleDateString('ar-SA')}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #E8E4DC;">
+                                <span style="color: var(--text-medium); font-size: 14px;">
+                                    💬 ${comments.length} تعليق
+                                </span>
+                                ${aiEval ? `
+                                    <span style="color: var(--primary); font-size: 14px; font-weight: 700; margin-right: auto;">
+                                        ⭐ ${aiEval.totalScore}%
+                                    </span>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // عرض تفاصيل العمل الفني في المعرض العام
+        function viewPublicArtwork(artworkId) {
+            const work = DB.artworks.find(a => a.id === artworkId);
+            const student = DB.students.find(s => s.id === work.studentId);
+            const aiEval = DB.aiEvaluations.find(e => e.artworkId === artworkId);
+            const comments = DB.comments.filter(c => c.artworkId === artworkId);
+
+            const lessonTypes = {
+                'portrait': 'بورتريه',
+                'still-life': 'طبيعة صامتة',
+                'landscape': 'منظر طبيعي',
+                'abstract': 'فن تجريدي',
+                'calligraphy': 'خط عربي',
+                'other': 'أخرى'
+            };
+
+            let content = `
+                <img src="${work.imageUrl}" style="width: 100%; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 8px 32px var(--shadow);">
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h3 style="font-family: 'Amiri', serif; font-size: 28px; color: var(--primary); margin-bottom: 10px;">
+                        ${work.title}
+                    </h3>
+                    <p style="font-size: 16px; color: var(--text-medium);">
+                        بواسطة: <strong style="color: var(--primary);">${student ? student.fullName : 'طالبة'}</strong>
+                    </p>
+                    <div style="display: flex; gap: 15px; justify-content: center; align-items: center; margin-top: 15px;">
+                        <span class="lesson-tag">${lessonTypes[work.lessonType]}</span>
+                        <span style="color: var(--text-medium);">${new Date(work.submissionDate).toLocaleDateString('ar-SA')}</span>
+                    </div>
+                </div>
+
+                ${aiEval ? `
+                    <div style="background: linear-gradient(135deg, rgba(139, 69, 102, 0.05), rgba(107, 139, 126, 0.05)); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 30px;">
+                        <div style="font-size: 14px; color: var(--text-medium); margin-bottom: 5px;">التقييم الإجمالي</div>
+                        <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            ${aiEval.totalScore}%
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="comments-section">
+                    <h3 style="font-family: 'Amiri', serif; font-size: 24px; color: var(--primary); margin-bottom: 20px;">
+                        💬 التعليقات (${comments.length})
+                    </h3>
+                    
+                    <div class="guidelines" style="margin-bottom: 25px;">
+                        <h4>🌟 تذكري: التعليق البناء</h4>
+                        <ul>
+                            <li>كوني إيجابية ومشجعة</li>
+                            <li>ابدئي بما أعجبك في العمل</li>
+                            <li>قدمي اقتراحات وليس انتقادات</li>
+                        </ul>
+                    </div>
+
+                    <div class="comment-form">
+                        <textarea id="publicCommentText" placeholder="شاركي رأيك البناء حول هذا العمل الرائع..." style="min-height: 120px;"></textarea>
+                        <input type="text" id="publicCommenterName" placeholder="اسمك الكامل" style="margin-top: 15px;" required>
+                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="addPublicComment(${artworkId})">
+                            إضافة تعليق 💬
+                        </button>
+                    </div>
+
+                    <div id="publicCommentsList">
+                        ${comments.map(c => `
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <span class="comment-author">${c.studentName}</span>
+                                    <span class="comment-date">${new Date(c.date).toLocaleDateString('ar-SA')}</span>
+                                </div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        `).join('') || '<p style="text-align: center; color: var(--text-medium); padding: 30px;">كوني أول من يعلق على هذا العمل الرائع! ✨</p>'}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalArtworkTitle').textContent = work.title;
+            document.getElementById('modalArtworkContent').innerHTML = content;
+            document.getElementById('artworkModal').classList.add('active');
+        }
+
+        // إضافة تعليق في المعرض العام
+        function addPublicComment(artworkId) {
+            const text = document.getElementById('publicCommentText').value.trim();
+            const name = document.getElementById('publicCommenterName').value.trim();
+            
+            if (!text) {
+                alert('الرجاء كتابة تعليق');
+                return;
+            }
+            
+            if (!name) {
+                alert('الرجاء كتابة اسمك');
+                return;
+            }
+
+            const comment = {
+                id: Date.now(),
+                artworkId,
+                studentName: name,
+                text,
+                date: new Date().toISOString(),
+                isFlagged: false
+            };
+
+            DB.comments.push(comment);
+            DB.save();
+
+            alert('شكراً على تعليقك البناء! 💬✨');
+            viewPublicArtwork(artworkId); // تحديث العرض
+            loadPublicGallery(); // تحديث المعرض
+        }
+    </script>
+</body>
+</html>
